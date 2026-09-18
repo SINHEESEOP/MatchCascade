@@ -1,0 +1,54 @@
+### 마크다운 — README.md만 Git에 포함한다 (한시적 규칙)
+# CLAUDE.md, PROGRESS.md, docs/, issues/ 의 모든 .md 를 포함해 전부 제외한다.
+# 공개 범위를 다시 열기로 결정하면 이 블록만 지우면 CLAUDE.md 문서 체계 표가
+# 그대로 다시 유효해진다.
+*.md
+!README.md
+
+### Claude Code 개인 설정 — 전체 제외
+.claude/
+
+### Gradle ###
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### 운영체제 ###
+.DS_Store
+
+### 로컬 환경 변수 ###
+.env
+.env.local
