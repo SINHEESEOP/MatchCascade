@@ -1,9 +1,16 @@
-### 마크다운 — README.md만 Git에 포함한다 (한시적 규칙)
-# CLAUDE.md, PROGRESS.md, docs/, issues/ 의 모든 .md 를 포함해 전부 제외한다.
-# 공개 범위를 다시 열기로 결정하면 이 블록만 지우면 CLAUDE.md 문서 체계 표가
-# 그대로 다시 유효해진다.
+### 마크다운 — CLAUDE.md 문서 체계 표의 `포함` 대상만 화이트리스트로 되살린다
+# 기본은 전부 제외. docs/study/, PROGRESS.md, docs/plan/, docs/learning/, CLAUDE.md,
+# claude-setup.md 는 표에 있어도(또는 없어도) 계속 제외한다 — study는 개인 학습
+# 정리용이라 공개 대상이 아니고, 나머지는 진행·학습 기록이거나 로컬 전용 설정이다.
 *.md
 !README.md
+!issues/**/*.md
+!docs/decisions/**/*.md
+!docs/wiki/domain/**/*.md
+!docs/wiki/flow/**/*.md
+!docs/wiki/troubleshooting/**/*.md
+!docs/erd.md
+!docs/invariants.md
 
 ### Claude Code 개인 설정 — 전체 제외
 .claude/
