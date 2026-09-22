@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import(TestcontainersConfiguration.class)
@@ -30,10 +30,15 @@ class ObservabilityConfigurationTest {
     EntityManagerFactory entityManagerFactory;
 
     @Test
-    void hikariCP_커넥션_메트릭이_노출된다() throws Exception {
-        mockMvc.perform(get("/actuator/metrics/hikaricp.connections.active"))
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("hikaricp.connections.active")));
+    void hikariCP_커넥션_메트릭_활성_유휴_대기가_모두_노출된다() throws Exception {
+        for (String state : java.util.List.of("active", "idle", "pending")) {
+            String metric = "hikaricp.connections." + state;
+
+            mockMvc.perform(get("/actuator/metrics/" + metric))
+                    .andExpect(status().is2xxSuccessful())
+                    .andExpect(jsonPath("$.name").value(metric))
+                    .andExpect(jsonPath("$.measurements[0].statistic").value("VALUE"));
+        }
     }
 
     @Test
