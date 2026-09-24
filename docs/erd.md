@@ -121,8 +121,8 @@ erDiagram
 ## 엔티티별 메모
 
 - **Customer / Partner**: 인증 범위 밖(`docs/decisions/01_인증_범위_제외.md`)이라 최소 컬럼만 둔다. Request/Quote의 소유자를 가리키는 식별자 수준.
-- **Request**: 생명주기: `OPEN → CLOSED`(자신의 Quote 중 하나가 CONFIRMED) 또는 `OPEN → EXPIRED`(만료 시각 도달, 확정 없음). 되돌아가는 화살표 없음.
-- **Quote**: 생명주기: `SUBMITTED → CONFIRMED`(고객이 확정) 또는 `SUBMITTED → INVALIDATED`(같은 슬롯의 다른 Quote가 CONFIRMED됨) 또는 `SUBMITTED → EXPIRED`. `@Version` 컬럼 필요 여부는 불변식 1의 계층이 정해진 뒤 결정한다. 지금은 넣지 않는다.
+- **Request**: 생명주기: `OPEN → CLOSED`(자신의 Quote 중 하나가 CONFIRMED) 또는 `OPEN → EXPIRED`(만료 시각 도달, 확정 없음). 되돌아가는 화살표 없음. CLOSED가 가리키는 확정 Quote는 하나뿐이어야 한다(불변식 8).
+- **Quote**: 생명주기: `SUBMITTED → CONFIRMED`(고객이 확정) 또는 `SUBMITTED → INVALIDATED` 또는 `SUBMITTED → EXPIRED`. INVALIDATED로 가는 경우는 두 가지다. 같은 슬롯의 다른 Quote가 CONFIRMED됐을 때(파트너가 그 시간에 다른 집으로 가게 됨), 그리고 같은 요청의 다른 Quote가 CONFIRMED됐을 때(고객이 다른 파트너를 고름). 둘 다 이후 전이가 없는 종착 상태라 상태는 하나로 둔다. 어느 쪽으로 무효화됐는지는 컬럼 없이 무효화 이벤트 페이로드에만 싣는다. 지금 그 사유를 읽는 곳이 파트너 알림뿐이고, 알림은 이벤트를 받아서 만든다. 취소 후 복원을 실제로 설계할 때 사유별로 다음 전이가 달라지면 컬럼이나 상태 분리를 다시 본다. `@Version` 컬럼 필요 여부는 불변식 1의 계층이 정해진 뒤 결정한다. 지금은 넣지 않는다.
 - **OutboxEvent**: 불변식 2·3을 지키는 테이블. `published_at`이 null인 로우만 Relay가 재시도 대상으로 본다.
 - **ConsumedEvent**: 컨슈머 쪽 dedup 기록. `dedup_key`에 UNIQUE 제약(불변식 4). 실제 처리 결과(예: Notification insert)와 이 로우의 insert가 같은 트랜잭션에 있어야 한다(불변식 5). ERD는 이 트랜잭션 경계를 표현하지 못하므로 `docs/wiki/flow/`에서 별도로 다룬다.
 - **슬롯**: 이 ERD에 없다. `(partner_id, desired_date, time_slot)` 조합이 Quote/Request 컬럼으로 대체 가능한 값인지, 별도 로우가 필요한지는 불변식 1의 계층을 정하는 과정에서 정한다.
