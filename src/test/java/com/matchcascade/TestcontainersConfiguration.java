@@ -13,14 +13,14 @@ class TestcontainersConfiguration {
     @Bean
     @ServiceConnection
     MySQLContainer mysqlContainer() {
-        return new MySQLContainer(DockerImageName.parse("mysql:latest"))
+        return new MySQLContainer(DockerImageName.parse("mysql:8.4"))
                 .withCommand("mysqld", "--innodb-lock-wait-timeout=5");
     }
 
     @Bean
     @ServiceConnection
     RabbitMQContainer rabbitContainer() {
-        return new RabbitMQContainer(DockerImageName.parse("rabbitmq:latest"));
+        return new RabbitMQContainer(DockerImageName.parse("rabbitmq:4.3"));
     }
 
 }
